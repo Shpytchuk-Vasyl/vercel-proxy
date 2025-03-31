@@ -28,6 +28,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	htmlProxy := os.Getenv("HTTP_PROXY_ENABLE") == "true"
 
+	// Set CORS headers to allow requests from any origin
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Max-Age", "3600")
+
+	// Handle preflight OPTIONS request
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	// Redirect to the GitHub repository
 	if r.URL.Path == "/" {
 		http.Redirect(w, r, "https://github.com/TBXark/vercel-proxy", http.StatusMovedPermanently)
