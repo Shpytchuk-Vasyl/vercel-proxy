@@ -1,0 +1,14 @@
+{
+  "name": "vercel-proxy",
+  "version": "1.0.0",
+  "description": "Simple proxy server with CORS support",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node api/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6",
+    "cors": "^2.8.5"
+  }
+} 
