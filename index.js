@@ -33,13 +33,13 @@ const createProxy = (targetUrl) => {
 app.use("/", createProxy(DEFAULT_TARGET_URL));
 
 // Dynamic target route - using wildcard to capture everything after /target/
-app.use("/target/*", (req, res, next) => {
+app.all("/target/*", (req, res, next) => {
   try {
     // Get everything after /target/
-    const encodedUrl = req.params[0];
-    console.log("Encoded URL:", encodedUrl);
+    const path = req.path.substring("/target/".length);
+    console.log("Path after /target/:", path);
 
-    const targetUrl = decodeURIComponent(encodedUrl);
+    const targetUrl = decodeURIComponent(path);
     console.log("Decoded URL:", targetUrl);
 
     // Validate URL
