@@ -36,6 +36,7 @@ app.use("/", createProxy(DEFAULT_TARGET_URL));
 app.use("/target/:encodedUrl", (req, res, next) => {
   try {
     const targetUrl = decodeURIComponent(req.params.encodedUrl);
+    console.log(targetUrl, "targetUrl", req.params.encodedUrl);
     // Validate URL
     new URL(targetUrl);
     // Create and use proxy for this specific request
