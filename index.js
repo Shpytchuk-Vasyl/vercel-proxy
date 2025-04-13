@@ -32,16 +32,22 @@ const createProxy = (targetUrl) => {
 // Default proxy route
 app.use("/", createProxy(DEFAULT_TARGET_URL));
 
-// Dynamic target route
-app.use("/target/:encodedUrl", (req, res, next) => {
+// Dynamic target route - using wildcard to capture everything after /target/
+app.use("/target/*", (req, res, next) => {
   try {
-    const targetUrl = decodeURIComponent(req.params.encodedUrl);
-    console.log(targetUrl, "targetUrl", req.params.encodedUrl);
+    // Get everything after /target/
+    const encodedUrl = req.params[0];
+    console.log("Encoded URL:", encodedUrl);
+
+    const targetUrl = decodeURIComponent(encodedUrl);
+    console.log("Decoded URL:", targetUrl);
+
     // Validate URL
     new URL(targetUrl);
     // Create and use proxy for this specific request
     createProxy(targetUrl)(req, res, next);
   } catch (error) {
+    console.error("Error processing URL:", error);
     res.status(400).send("Invalid URL");
   }
 });
