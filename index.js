@@ -11,8 +11,8 @@ app.use(cors());
 const DEFAULT_TARGET_URL = "https://backend.svg.io";
 
 // Create proxy middleware with dynamic target
-const createProxy = (targetUrl) =>
-  createProxyMiddleware({
+const createProxy = (targetUrl) => {
+  const proxyConfig = {
     target: targetUrl,
     changeOrigin: true,
     pathRewrite: {
@@ -26,7 +26,10 @@ const createProxy = (targetUrl) =>
       console.error("Proxy Error:", err);
       res.status(500).send("Proxy Error");
     },
-  });
+  };
+
+  return createProxyMiddleware(proxyConfig);
+};
 
 // Default proxy route
 app.use("/", createProxy(DEFAULT_TARGET_URL));
