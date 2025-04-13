@@ -32,14 +32,14 @@ const createProxy = (targetUrl) => {
 // Default proxy route
 app.use("/", createProxy(DEFAULT_TARGET_URL));
 
-// Dynamic target route - using wildcard to capture everything after /target/
-app.all("/target/*", (req, res, next) => {
+// Dynamic target route - using a format that Vercel understands
+app.all("/target/:encodedUrl(*)", (req, res, next) => {
   try {
-    // Get everything after /target/
-    const path = req.path.substring("/target/".length);
-    console.log("Path after /target/:", path);
+    // Get the encoded URL from the parameter
+    const encodedUrl = req.params.encodedUrl;
+    console.log("Encoded URL:", encodedUrl);
 
-    const targetUrl = decodeURIComponent(path);
+    const targetUrl = decodeURIComponent(encodedUrl);
     console.log("Decoded URL:", targetUrl);
 
     // Validate URL
