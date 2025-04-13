@@ -8,27 +8,41 @@ const app = express();
 app.use(cors());
 
 // Get target URL from environment variable or use default
-const TARGET_URL = "https://backend.svg.io";
+const DEFAULT_TARGET_URL = "https://backend.svg.io";
 
-// Create proxy middleware
-const proxy = createProxyMiddleware({
-  target: TARGET_URL,
-  changeOrigin: true,
-  pathRewrite: {
-    "^/": "/", // remove / from the beginning of the path
-  },
-  onProxyRes: function (proxyRes, req, res) {
-    // Add CORS headers to the response
-    proxyRes.headers["Access-Control-Allow-Origin"] = "*";
-  },
-  onError: (err, req, res) => {
-    console.error("Proxy Error:", err);
-    res.status(500).send("Proxy Error");
-  },
+// Create proxy middleware with dynamic target
+const createProxy = (targetUrl) =>
+  createProxyMiddleware({
+    target: targetUrl,
+    changeOrigin: true,
+    pathRewrite: {
+      "^/": "/", // remove / from the beginning of the path
+    },
+    onProxyRes: function (proxyRes, req, res) {
+      // Add CORS headers to the response
+      proxyRes.headers["Access-Control-Allow-Origin"] = "*";
+    },
+    onError: (err, req, res) => {
+      console.error("Proxy Error:", err);
+      res.status(500).send("Proxy Error");
+    },
+  });
+
+// Default proxy route
+app.use("/", createProxy(DEFAULT_TARGET_URL));
+
+// Dynamic target route
+app.use("/target/:encodedUrl", (req, res, next) => {
+  try {
+    const targetUrl = decodeURIComponent(req.params.encodedUrl);
+    // Validate URL
+    new URL(targetUrl);
+    // Create and use proxy for this specific request
+    createProxy(targetUrl)(req, res, next);
+  } catch (error) {
+    res.status(400).send("Invalid URL");
+  }
 });
-
-// Use proxy middleware for all routes
-app.use("/", proxy);
 
 // Error handling
 app.use((err, req, res, next) => {
