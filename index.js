@@ -12,13 +12,13 @@ const DEFAULT_TARGET_URL = "https://backend.svg.io";
 
 // Create proxy middleware with dynamic target
 const createProxy = (targetUrl) => {
-  const proxyConfig = {
+  return createProxyMiddleware({
     target: targetUrl,
     changeOrigin: true,
     pathRewrite: {
       "^/": "/", // remove / from the beginning of the path
     },
-    onProxyRes: function (proxyRes, req, res) {
+    onProxyRes: (proxyRes, req, res) => {
       // Add CORS headers to the response
       proxyRes.headers["Access-Control-Allow-Origin"] = "*";
     },
@@ -26,9 +26,7 @@ const createProxy = (targetUrl) => {
       console.error("Proxy Error:", err);
       res.status(500).send("Proxy Error");
     },
-  };
-
-  return createProxyMiddleware(proxyConfig);
+  });
 };
 
 // Default proxy route
