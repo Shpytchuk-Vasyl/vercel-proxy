@@ -1,6 +1,7 @@
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
