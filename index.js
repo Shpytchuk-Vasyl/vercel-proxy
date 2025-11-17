@@ -28,7 +28,7 @@ app.use(cors());
 // });
 
 app.get(
-  "/avatars/720683700249165866/e96a7c28520e1ab101ba2d2a8a97fd28.png?size=256",
+  "/avatars/720683700249165866/e96a7c28520e1ab101ba2d2a8a97fd28.png",
   (req, res) => {
     const clientIp = req.ip || req?.connection?.remoteAddress;
     const cookiesHeader = req.headers.cookie || "";
